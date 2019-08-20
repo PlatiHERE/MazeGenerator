@@ -6,7 +6,7 @@ namespace MazeGenerator
     {
         public bool[] walls = { true, true, true, true };   // top, right, bottom, left
         public bool visited = false;
-
+        public bool secondTry = false;          // goes true after setting seeker at this cell again
         public Cell() {
 
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading;
 
 namespace MazeGenerator
 {
@@ -9,14 +10,15 @@ namespace MazeGenerator
 
         int seekerPosX;
         int seekerPosY;
-        int size;
-        Cell[,] cell;
+        public int size;
+        public Cell[,] cell;
         Random random;
+        public List<Point> visited = new List<Point>();
 
-        public Generator(int size) {
+        public Generator(int size, bool live) {
             random = new Random();
             this.size = size;
-            seekerPosX = size / 2;
+            seekerPosX = 0;
             seekerPosY = 0;
             cell = new Cell[size, size];
             for (int i = 0; i < size; i++)
@@ -26,25 +28,30 @@ namespace MazeGenerator
                     cell[j, i] = new Cell();
                 }
             }
+            visited.Add(new Point(seekerPosX, seekerPosY));
             cell[seekerPosX, seekerPosY].visited = true;
             cell[seekerPosX, seekerPosY].walls[0] = false;
-            Direction();
+            //Direction();
         }
 
-        void Direction() {
+        public void SetSeeker(Point point) {
+            seekerPosX = point.X;
+            seekerPosY = point.Y;
+        }
 
-            while (true) {
-                List<Point> list = CheckNeighbors();
-                if (list.Count > 0)
-                {
-                    int val = random.Next(list.Count);
-                    RemoveWalls(new Point(seekerPosX, seekerPosY), list[val]);
-                    seekerPosX = list[val].X;
-                    seekerPosY = list[val].Y;
-                    cell[seekerPosX, seekerPosY].visited = true;
-                }
-                else break;
+        public bool GenerateNextStep() {
+            List<Point> list = CheckNeighbors();
+            if (list.Count > 0)
+            {
+                int val = random.Next(list.Count);
+                RemoveWalls(new Point(seekerPosX, seekerPosY), list[val]);
+                seekerPosX = list[val].X;
+                seekerPosY = list[val].Y;
+                cell[seekerPosX, seekerPosY].visited = true;
+                visited.Add(new Point(seekerPosX, seekerPosY));
+                return true;
             }
+            else return false;
         }
         void RemoveWalls(Point origin, Point direction) {
             int moveX = direction.X - origin.X;
