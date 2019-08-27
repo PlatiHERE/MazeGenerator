@@ -12,7 +12,7 @@ namespace MazeGenerator
         }
 
         public void Draw(Pen pen, Graphics graphics, Point position, int cellPxSize) {
-            SolidBrush brush = new SolidBrush(Color.Violet);
+            SolidBrush brush = new SolidBrush(Color.White);
             if (visited) graphics.FillRectangle(brush, ((position.X + 1) * cellPxSize), ((position.Y + 1) * cellPxSize), cellPxSize, cellPxSize);
 
             if (walls[0]) graphics.DrawLine(pen, ((position.X + 1) * cellPxSize),                  //     LEFT X

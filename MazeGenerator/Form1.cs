@@ -11,6 +11,9 @@ namespace MazeGenerator
 {
     public partial class Form1 : Form
     {
+
+        Thread thread;
+
         public Generator generator;
         public Form1()
         {
@@ -24,15 +27,22 @@ namespace MazeGenerator
 
         private void Button1_Click(object sender, EventArgs e)
         {
-            
-            generator = new Generator((int)numericUpDown1.Value, checkBox1.Checked);
-            ThreadStart ts = new ThreadStart(Live);
-            Thread thread = new Thread(ts);
-            thread.Start();
+            thread = new Thread(Live);
+            if (thread.ThreadState == ThreadState.Running)
+            {
+                checkBox1.Checked = false;
+                generator = null;
+            }
+            else
+            {
+                generator = new Generator((int)numericUpDown1.Value, checkBox1.Checked);
+                //thread = new Thread(Live);
+                thread.Start();
+            }
         }
         private void Live() {
 
-            Action<bool> updateAction = new Action<bool>((value) => button2.Enabled = value);       //Turn off Exort Button
+            Action<bool> updateAction = new Action<bool>((value) => button2.Enabled = value);       //Turn off Export Button
             button2.Invoke(updateAction, false);
 
             while (true)
@@ -52,6 +62,7 @@ namespace MazeGenerator
                 }
 
                 generator.SetSeeker(generator.visited[0]);
+                //MessageBox.Show("ilosc w liscie:" + generator.visited.Count + "\n pozycja:");
                 generator.visited.RemoveAt(0);
                 if (generator.visited.Count == 0) break;   
             }
@@ -62,7 +73,15 @@ namespace MazeGenerator
 
         private void Button2_Click(object sender, EventArgs e)
         {
-            pictureBox1.Image.Save("Maze", ImageFormat.Jpeg);
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = "JPeg Image|*.jpg|Bitmap Image|*.bmp|Gif Image|*.gif";
+            saveFileDialog1.Title = "Save an Image File";
+            saveFileDialog1.ShowDialog();
+            if (saveFileDialog1.FileName != "")
+            {
+
+                pictureBox1.Image.Save(saveFileDialog1.FileName);
+            }
         }
     }
 }

@@ -7,7 +7,7 @@ namespace MazeGenerator
 {
     public class Generator
     {
-
+        bool working;
         int seekerPosX;
         int seekerPosY;
         public int size;
@@ -32,6 +32,9 @@ namespace MazeGenerator
             cell[seekerPosX, seekerPosY].visited = true;
             cell[seekerPosX, seekerPosY].walls[0] = false;
             //Direction();
+        }
+        ~Generator() {
+            cell = null;
         }
 
         public void SetSeeker(Point point) {
@@ -97,11 +100,12 @@ namespace MazeGenerator
             Bitmap bmp = new Bitmap((size + 2) * 10 + (size + 2) * 2, (size + 2) * 10 + (size + 2) * 2);     //Create Bitmap. 10px per cell. 2px per space between cells.
             Graphics graphics = Graphics.FromImage(bmp);
             Pen pen = new Pen(Color.Black, 1);
+            graphics.FillRectangle(new SolidBrush(Color.White), 0, 0, (size + 2) * 10 + (size + 2) * 2, (size + 2) * 10 + (size + 2) * 2); 
             for (int i = 0; i < size; i++)
             {
                 for (int j = 0; j < size; j++)
                 {
-                    cell[j, i].Draw(pen, graphics, new Point(j, i), 10);
+                    cell[j, i].Draw(pen, graphics, new Point(j, i), 12);
                 }
             }
             return bmp;
